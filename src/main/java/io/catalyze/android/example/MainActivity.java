@@ -1,6 +1,7 @@
 package io.catalyze.android.example;
 
 import android.app.Activity;
+import android.content.Intent;
 //import android.content.Intent;
 import android.os.Bundle;
 //import android.util.Log;
@@ -17,8 +18,6 @@ import io.catalyze.sdk.android.user.ZipCode;
 
 public class MainActivity extends Activity {
 
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,7 +27,28 @@ public class MainActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						MyApplication.catalyze.signOut(newResponseHandler());
+						CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>() {
+
+							@Override
+							public void onError(CatalyzeException error) {
+								Toast.makeText(
+										MainActivity.this,
+										"Log out failed: "
+												+ error.getMessage(), 5)
+										.show();
+
+							}
+
+							@Override
+							public void onSuccess(CatalyzeUser response) {
+								Intent intent = new Intent(MainActivity.this,
+										LoginActivity.class);
+								startActivity(intent);
+								
+								MainActivity.this.finish();
+							}
+						};
+						MyApplication.catalyze.signOut(handler);
 					}
 				});
 
@@ -38,11 +58,11 @@ public class MainActivity extends Activity {
 					public void onClick(View v) {
 						// String classname = "ccTest1";
 
-						//if (customClass == null)
-						//	customClass = CustomClass.getInstance("user2",
-						//			mUser);
-						//customClass.getEntry("528653c7117079bb586e5aa7",
-						//		newCCHandler());
+						// if (customClass == null)
+						// customClass = CustomClass.getInstance("user2",
+						// mUser);
+						// customClass.getEntry("528653c7117079bb586e5aa7",
+						// newCCHandler());
 
 						// catalyze.lookupUser("test@user.com",
 						// lookupUserHandler());
@@ -128,25 +148,24 @@ public class MainActivity extends Activity {
 
 					}
 				});
-		
+
 		findViewById(R.id.update).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						 //catalyze.getUser("test@user.com", "testpass",
-						 //newUserResposneHandler());
-						 
-						 
+						// catalyze.getUser("test@user.com", "testpass",
+						// newUserResposneHandler());
+
 						// mUser.setStreet("1 E Main St");
-						//mUser.setAge(55);
-						//mUser.setCity("Madison");
-						//mUser.setState("Wisconsin");
-						//mUser.setDateOfBirth("1990-07-18");
-						//mUser.setCountry("US");
-						//mUser.setGender(Gender.MALE);
-						//mUser.setPhoneNumber("9876543210");
-						//mUser.setZipCode(new ZipCode("54321"));
-						//mUser.update(newUserResponseHandler());
+						// mUser.setAge(55);
+						// mUser.setCity("Madison");
+						// mUser.setState("Wisconsin");
+						// mUser.setDateOfBirth("1990-07-18");
+						// mUser.setCountry("US");
+						// mUser.setGender(Gender.MALE);
+						// mUser.setPhoneNumber("9876543210");
+						// mUser.setZipCode(new ZipCode("54321"));
+						// mUser.update(newUserResponseHandler());
 					}
 				});
 
@@ -154,9 +173,9 @@ public class MainActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						//if (customClass == null)
-						//	customClass = CustomClass.getInstance("user2",
-						//			mUser);
+						// if (customClass == null)
+						// customClass = CustomClass.getInstance("user2",
+						// mUser);
 						//
 						// cc.query("ccTest1", newCCHandler());
 						// Query q = new Query("MyNewClass");
@@ -170,7 +189,7 @@ public class MainActivity extends Activity {
 						// customClass.getArrayRef("user",
 						// "5284ff081170cc2a30370937", "address",
 						// "5284fe141170cc2a30370935", newCCHandler());
-						//customClass.getArray("visits", newCCArrayHandler());
+						// customClass.getArray("visits", newCCArrayHandler());
 						// customClass.deleteArrayRef("user",
 						// "5284ff081170cc2a30370937", "address",
 						// "5284fe141170cc2a30370935", newCCHandler());
@@ -196,7 +215,7 @@ public class MainActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						//catalyze.deleteCurrentUser(newResponseHandler());
+						// catalyze.deleteCurrentUser(newResponseHandler());
 					}
 				});
 
@@ -206,35 +225,18 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<CatalyzeUser>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				// TODO Auto-generated method stub
 				System.out.println("SOMETHING WENT WRONG");
-				//mUser.toString();
+				// mUser.toString();
 			}
 
 			@Override
 			public void onSuccess(CatalyzeUser response) {
 				// TODO Auto-generated method stub
-				//mUser = response;
+				// mUser = response;
 				String s = "Successful operation!!!";
 				System.out.println(s);
-			}
-		};
-	}
-
-	private CatalyzeListener<CatalyzeUser> newResponseHandler() {
-		return new CatalyzeListener<CatalyzeUser>() {
-
-			@Override
-			public void onError(CatalyzeError response) {
-				// TODO Auto-generated method stub
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(CatalyzeUser response) {
-				// TODO Auto-generated method stub
-
 			}
 		};
 	}
@@ -243,14 +245,14 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<CatalyzeUser>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				// TODO Auto-generated method stub
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
 			@Override
 			public void onSuccess(CatalyzeUser response) {
-				//otherUser = response;
+				// otherUser = response;
 
 			}
 		};
@@ -260,7 +262,7 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<String[]>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				// TODO Auto-generated method stub
 				System.out.println("SOMETHING WENT WRONG");
 			}
@@ -277,7 +279,7 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<UmlsResult[]>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
@@ -293,7 +295,7 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<UmlsResult>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
@@ -309,13 +311,13 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<CustomClass>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
 			@Override
 			public void onSuccess(CustomClass response) {
-				//customClass = response;
+				// customClass = response;
 			}
 
 		};
@@ -325,7 +327,7 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<CustomClass[]>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
@@ -341,13 +343,13 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<Query>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
 			@Override
 			public void onSuccess(Query response) {
-				//query = response;
+				// query = response;
 				System.out.println("Query response completed succesfully");
 			}
 
@@ -358,13 +360,13 @@ public class MainActivity extends Activity {
 		return new CatalyzeListener<CustomClass>() {
 
 			@Override
-			public void onError(CatalyzeError response) {
+			public void onError(CatalyzeException response) {
 				System.out.println("SOMETHING WENT WRONG");
 			}
 
 			@Override
 			public void onSuccess(CustomClass response) {
-				//customClass = response;
+				// customClass = response;
 			}
 
 		};
