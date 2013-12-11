@@ -39,6 +39,26 @@
             android:label="@string/app_name" >
         </activity>
 
+        <activity
+            android:name="io.catalyze.android.example.UmlsActivity"
+            android:label="Catalyze UMLS Service" >
+        </activity>
+        
+        <activity
+            android:name="io.catalyze.android.example.CustomClassActivity"
+            android:label="Catalyze Custom Classes" >
+        </activity>
+        
+        <activity
+            android:name="io.catalyze.android.example.CustomClassEditActivity"
+            android:label="Custom Class Editor" >
+        </activity>
+        
+        <activity
+            android:name="io.catalyze.android.example.UserInfoActivity"
+            android:label="User Details" >
+        </activity>
+        
         <meta-data
             android:name="io.catalyze.andrioid.sdk.v1.API_KEY"
             android:value="521f34580cf2520fa83f4f2e" />

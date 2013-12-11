@@ -4,10 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    
+    <ExpandableListView
+        android:id="@+id/ccExpandableListView"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ExpandableListView>
+    
     <Button
-        android:id="@+id/superUser"
+        android:id="@+id/ccAddEntry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:text="Add Entry" />
+    
 
 </LinearLayout>

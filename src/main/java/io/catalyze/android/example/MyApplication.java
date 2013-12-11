@@ -15,7 +15,9 @@ public class MyApplication extends Application {
 	//public static final String IDENTIFIER = "android.example";
 	// Don't set this until a successful Catalyze.authenticate() call has
 		// returned
-	protected static Catalyze catalyze = null;
+	//protected static Catalyze catalyze = null;
+	
+	public static final String[] CUSTOM_CLASS_NAMES = { "address", "visits" };
 	
     @Override
     public void onCreate() {
@@ -23,6 +25,9 @@ public class MyApplication extends Application {
 
         Catalyze.API_KEY = "1f077962-18cc-4ade-8075-d9fa1642f316";
         Catalyze.IDENTIFIER = "android.example";
+        
+        
+        
     }
 
 

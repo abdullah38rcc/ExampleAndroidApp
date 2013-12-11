@@ -1,286 +1,146 @@
 package io.catalyze.android.example;
 
+
+import io.catalyze.sdk.android.Catalyze;
+import io.catalyze.sdk.android.CatalyzeException;
+import io.catalyze.sdk.android.CatalyzeListener;
+import io.catalyze.sdk.android.CatalyzeUser;
+import io.catalyze.sdk.android.UMLS;
+import io.catalyze.sdk.android.UmlsResult;
 import android.app.Activity;
 import android.content.Intent;
-//import android.content.Intent;
 import android.os.Bundle;
-//import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-//import android.widget.Button;
-import android.widget.EditText;
-//import android.widget.TextView;
-
+import android.widget.Button;
 import android.widget.Toast;
-import io.catalyze.sdk.android.*;
-import io.catalyze.sdk.android.user.Gender;
-import io.catalyze.sdk.android.user.ZipCode;
+
 
 public class MainActivity extends Activity {
+
+	Catalyze catalyze = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		findViewById(R.id.logout).setOnClickListener(
-				new View.OnClickListener() {
+		catalyze = (Catalyze) getIntent().getSerializableExtra("catalyze");
+		if (catalyze == null) {
+			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
+					.show();
+
+			finish();
+		}
+
+		final Button logoutButton = (Button) findViewById(R.id.mainLogoutButton);
+		final Button getUserButton = (Button) findViewById(R.id.mainGetUserButton);
+		final Button umlsButton = (Button) findViewById(R.id.mainUmlsButton);
+		final Button umlsTestButton = (Button) findViewById(R.id.mainUmlsTestButton);
+		final Button customClassButton = (Button) findViewById(R.id.mainCustomClassesButton);
+		final Button uploadButton = (Button) findViewById(R.id.mainFileUploadButton);
+		final Button downloadButton = (Button) findViewById(R.id.mainFileDownloadButton);
+
+		logoutButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>(
+						MainActivity.this) {
+
 					@Override
-					public void onClick(View v) {
-						CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>() {
-
-							@Override
-							public void onError(CatalyzeException error) {
-								Toast.makeText(
-										MainActivity.this,
-										"Log out failed: "
-												+ error.getMessage(), 5)
-										.show();
-
-							}
-
-							@Override
-							public void onSuccess(CatalyzeUser response) {
-								Intent intent = new Intent(MainActivity.this,
-										LoginActivity.class);
-								startActivity(intent);
-								
-								MainActivity.this.finish();
-							}
-						};
-						MyApplication.catalyze.signOut(handler);
-					}
-				});
-
-		findViewById(R.id.GetUser).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// String classname = "ccTest1";
-
-						// if (customClass == null)
-						// customClass = CustomClass.getInstance("user2",
-						// mUser);
-						// customClass.getEntry("528653c7117079bb586e5aa7",
-						// newCCHandler());
-
-						// catalyze.lookupUser("test@user.com",
-						// lookupUserHandler());
-						//
-						// JSONObject schema = new JSONObject();
-						// try {
-						// schema.put("name", "string");
-						// schema.put("occupation", "string");
-						// schema.put("location", "string");
-						// schema.put("age", "integer");
-						// } catch (JSONException e) {
-						//
-						// }
-						//
-						// cc.get("MyNewClass", newCCHandler());
-						// cc.getEntry("MyNewClass", "5282742e11709322bbbb9e37",
-						// newCCHandler());
-						// customClass.putContent("city", "chicago");
-						// customClass.updateEntry("MyNewClass",
-						// "5282ad77117003b47fad4c00", newCCHandler());
-						// cc.delete(classname, newCCHandler());
-						// JSONObject newInstance = new JSONObject();
-						// try {
-						// newInstance.put("name", "philip");
-						// newInstance.put("occupation", "barber");
-						// newInstance.put("location", "somewhere");
-						// newInstance.put("age", 55);
-						// } catch (JSONException e) {
-						//
-						// }
-						// cc.createCustomClass(classname, false, schema,
-						// newCCHandler());
-						// cc.addInstance(classname, newInstance,
-						// newCCHandler());
-						// cc.get(classname, newCCHandler());
-
-						// CustomClass.addInstance("customClassTest2",
-						// newInstance, catalyze, newCCHandler());
-
-						// JSONObject schema = new JSONObject();
-						// try {
-						// schema.put("name", "string");
-						// schema.put("occupation", "string");
-						// schema.put("location", "string");
-						// schema.put("age", "integer");
-						// } catch (JSONException e) {
-						// // TODO Auto-generated catch block
-						// e.printStackTrace();
-						// }
-						//
-						//
-						// CustomClass cc = new CustomClass("customClassTest1",
-						// false, schema, catalyze, newCCHandler());
-
-						// CustomClass.getInstance(catalyze, "customClassTest",
-						// newCCHandler());
-					}
-				});
-
-		findViewById(R.id.superUser).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// catalyze.lookupUser("test@user.com",
-						// newUserResponseHandler());
-						// otherUser.setFirstName("asdfghjkl");
-						// catalyze.updateUser(otherUser,
-						// newUserResponseHandler());
-						// catalyze.searchForUser("test", userSearchHandler());
-						UMLS u = MyApplication.catalyze.getUmlsInstance();
-						// u.getCodesetList(userSearchHandler());
-						// u.getValueSetList(userSearchHandler());
-						// u.codeLookup("SNOMEDCT", "244329001",
-						// listenForUmlsResults());
-						u.valueLookup("city", "1581834", listenForUmlsResult());
-						u.searchByKeyword("rxnorm", "Acetaminophen",
-								listenForUmlsResults());
-
-						// u.searchByCodeOrConcept("concept", "snomedct",
-						// "244329001", listenForUmlsResults());
-						// u.searchByPrefix("snomedct", "acet",
-						// listenForUmlsResults());
+					public void onError(CatalyzeException error) {
+						Toast.makeText(MainActivity.this,
+								"Log out failed: " + error.getMessage(),
+								Toast.LENGTH_SHORT).show();
 
 					}
-				});
 
-		findViewById(R.id.update).setOnClickListener(
-				new View.OnClickListener() {
 					@Override
-					public void onClick(View v) {
-						// catalyze.getUser("test@user.com", "testpass",
-						// newUserResposneHandler());
+					public void onSuccess(CatalyzeUser response) {
+						Intent intent = new Intent(MainActivity.this,
+								LoginActivity.class);
+						startActivity(intent);
 
-						// mUser.setStreet("1 E Main St");
-						// mUser.setAge(55);
-						// mUser.setCity("Madison");
-						// mUser.setState("Wisconsin");
-						// mUser.setDateOfBirth("1990-07-18");
-						// mUser.setCountry("US");
-						// mUser.setGender(Gender.MALE);
-						// mUser.setPhoneNumber("9876543210");
-						// mUser.setZipCode(new ZipCode("54321"));
-						// mUser.update(newUserResponseHandler());
+						MainActivity.this.finish();
 					}
-				});
+				};
+				catalyze.signOut(handler);
+			}
+		});
 
-		findViewById(R.id.customClasses).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// if (customClass == null)
-						// customClass = CustomClass.getInstance("user2",
-						// mUser);
-						//
-						// cc.query("ccTest1", newCCHandler());
-						// Query q = new Query("MyNewClass");
-						// q.setField("");
-						// q.setPageNumber(1);
-						// q.setSearchBy("");
-						// q.setPageSize(25);
-						// q.executeQuery(catalyze, newQueryHandler());
-						// customClass.getEntry("MyNewClass",
-						// "5282ad77117003b47fad4c00", newCCHandler());
-						// customClass.getArrayRef("user",
-						// "5284ff081170cc2a30370937", "address",
-						// "5284fe141170cc2a30370935", newCCHandler());
-						// customClass.getArray("visits", newCCArrayHandler());
-						// customClass.deleteArrayRef("user",
-						// "5284ff081170cc2a30370937", "address",
-						// "5284fe141170cc2a30370935", newCCHandler());
-						// customClass.addReferenceArray("user2",
-						// "528653c7117079bb586e5aa7", "visits",
-						// "528660e6117079bb586e5abb", newCCHandler());
-						// cc.get("ccTest1", newCCHandler());
-						// JSONObject newInstance = new JSONObject();
-						// try {
-						// newInstance.put("name", "philip");
-						// newInstance.put("occupation", "barber");
-						// newInstance.put("location", "somewhere");
-						// newInstance.put("age", 55);
-						// } catch (JSONException e) {
-						//
-						// }
-						// cc.addEntry("ccTest2" + "", newInstance,
-						// newCCHandler());
-					}
-				});
+		getUserButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,
+						UserInfoActivity.class);
+				intent.putExtra("catalyze", catalyze);
+				startActivity(intent);
 
-		findViewById(R.id.DeleteUser).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// catalyze.deleteCurrentUser(newResponseHandler());
-					}
-				});
+			}
+		});
 
+		umlsTestButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UMLS u = catalyze.getUmlsInstance();
+				u.valueLookup("city", "1581834", listenForUmlsResult());
+				u.searchByKeyword("rxnorm", "Acetaminophen",
+						listenForUmlsResults());
+			}
+		});
+
+		customClassButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(MainActivity.this,
+						CustomClassActivity.class);
+				intent.putExtra("catalyze", catalyze);
+				startActivity(intent);
+			}
+		});
+
+		uploadButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(MainActivity.this,
+						"Sorry file upload/download is not yet implemented in the SDK",
+						Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		downloadButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(MainActivity.this,
+						"Sorry file upload/download is not yet implemented in the SDK",
+						Toast.LENGTH_SHORT).show();
+			}
+
+		});
+
+		umlsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(MainActivity.this,
+						UmlsActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
-	private CatalyzeListener<CatalyzeUser> newUserResponseHandler() {
-		return new CatalyzeListener<CatalyzeUser>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				// TODO Auto-generated method stub
-				System.out.println("SOMETHING WENT WRONG");
-				// mUser.toString();
-			}
-
-			@Override
-			public void onSuccess(CatalyzeUser response) {
-				// TODO Auto-generated method stub
-				// mUser = response;
-				String s = "Successful operation!!!";
-				System.out.println(s);
-			}
-		};
-	}
-
-	private CatalyzeListener<CatalyzeUser> lookupUserHandler() {
-		return new CatalyzeListener<CatalyzeUser>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				// TODO Auto-generated method stub
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(CatalyzeUser response) {
-				// otherUser = response;
-
-			}
-		};
-	}
-
-	private CatalyzeListener<String[]> userSearchHandler() {
-		return new CatalyzeListener<String[]>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				// TODO Auto-generated method stub
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(String[] response) {
-				String[] results = response;
-
-			}
-		};
-	}
 
 	private CatalyzeListener<UmlsResult[]> listenForUmlsResults() {
-		return new CatalyzeListener<UmlsResult[]>() {
+		return new CatalyzeListener<UmlsResult[]>(MainActivity.this) {
 
 			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
+			public void onError(CatalyzeException ce) {
+				Toast.makeText(MainActivity.this,
+						"UMLS operation failed: " + ce.getMessage(),
+						Toast.LENGTH_SHORT).show();
+
 			}
 
 			@Override
@@ -292,91 +152,23 @@ public class MainActivity extends Activity {
 	}
 
 	private CatalyzeListener<UmlsResult> listenForUmlsResult() {
-		return new CatalyzeListener<UmlsResult>() {
+		return new CatalyzeListener<UmlsResult>(MainActivity.this) {
 
 			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
+			public void onError(CatalyzeException ce) {
+				Toast.makeText(MainActivity.this,
+						"UMLS operation failed: " + ce.getMessage(),
+						Toast.LENGTH_SHORT).show();
+
 			}
 
 			@Override
 			public void onSuccess(UmlsResult response) {
-				UmlsResult results = response;
-
+				Toast.makeText(MainActivity.this,
+						"UMLS result: " + response.toString(2),
+						Toast.LENGTH_SHORT).show();
 			}
 		};
-	}
-
-	private CatalyzeListener<CustomClass> newCCHandler() {
-		return new CatalyzeListener<CustomClass>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(CustomClass response) {
-				// customClass = response;
-			}
-
-		};
-	}
-
-	private CatalyzeListener<CustomClass[]> newCCArrayHandler() {
-		return new CatalyzeListener<CustomClass[]>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(CustomClass[] response) {
-				CustomClass[] a = response;
-			}
-
-		};
-	}
-
-	private CatalyzeListener<Query> newQueryHandler() {
-		return new CatalyzeListener<Query>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(Query response) {
-				// query = response;
-				System.out.println("Query response completed succesfully");
-			}
-
-		};
-	}
-
-	private CatalyzeListener<CustomClass> newCCHandlerVoidResponse() {
-		return new CatalyzeListener<CustomClass>() {
-
-			@Override
-			public void onError(CatalyzeException response) {
-				System.out.println("SOMETHING WENT WRONG");
-			}
-
-			@Override
-			public void onSuccess(CustomClass response) {
-				// customClass = response;
-			}
-
-		};
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 
 }
