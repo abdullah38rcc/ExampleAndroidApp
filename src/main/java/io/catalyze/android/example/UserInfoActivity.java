@@ -13,6 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Simple screen allowing the user's name to be updated.
+ * 
+ * @author uphoff
+ * 
+ */
 public class UserInfoActivity extends Activity {
 
 	@Override
@@ -20,13 +26,22 @@ public class UserInfoActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_info);
 
-		Catalyze catalyze = (Catalyze)getIntent().getSerializableExtra("catalyze");
-		
+		// Get the Catalyze instance from the intent and fail if it is not
+		// present
+		Catalyze catalyze = (Catalyze) getIntent().getSerializableExtra(
+				"catalyze");
+		if (catalyze == null) {
+			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
+					.show();
+
+			finish();
+		}
+
 		final CatalyzeUser user = catalyze.getAuthenticatedUser();
 
 		TextView userNameTextView = (TextView) findViewById(R.id.userUserNameTextView);
 		userNameTextView.setText("User name: " + user.getUsername());
-		
+
 		final EditText firstName = (EditText) findViewById(R.id.userFirstNameEditText);
 		firstName.setText(user.getFirstName());
 
@@ -35,7 +50,9 @@ public class UserInfoActivity extends Activity {
 
 		final Button updateButton = (Button) findViewById(R.id.userUpdateButton);
 
-		final CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>(this) {
+		// Create a handler for updates to the backend
+		final CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>(
+				this) {
 
 			@Override
 			public void onError(CatalyzeException ce) {
@@ -55,8 +72,13 @@ public class UserInfoActivity extends Activity {
 		updateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// Update the fields in the instance
+				// Changes are only local until update() is called and the
+				// handler returns successfully.
 				user.setFirstName(firstName.getText().toString());
 				user.setLastName(lastName.getText().toString());
+
+				// Update on the backend using the provided handler
 				user.update(handler);
 			}
 		});

@@ -37,11 +37,14 @@ public class LoginActivity extends Activity {
 				String userName = userEditText.getText().toString();
 				String password = passwordEditText.getText().toString();
 
+				// To do anything we need an authenticated Catalyze instance
 				Catalyze.authenticate(userName, password, LoginActivity.this,
 						new CatalyzeListener<Catalyze>(LoginActivity.this) {
 
 							@Override
 							public void onError(CatalyzeException ce) {
+								// Could be a bad user/password or a user that
+								// does not exists
 								Toast.makeText(LoginActivity.this,
 										"Login failed: " + ce.getMessage(),
 										Toast.LENGTH_SHORT).show();
@@ -50,6 +53,9 @@ public class LoginActivity extends Activity {
 
 							@Override
 							public void onSuccess(Catalyze catalyze) {
+
+								// The user is authenticated.
+								// Send the instance to the main screen.
 
 								Intent intent = new Intent(LoginActivity.this,
 										MainActivity.class);
@@ -75,6 +81,7 @@ public class LoginActivity extends Activity {
 				String firstName = "Bob";
 				String lastName = "Jones";
 
+				// Sign up a new user and log in in one shot.
 				Catalyze.signUp(userName, password, firstName, lastName,
 						LoginActivity.this, new CatalyzeListener<Catalyze>(
 								LoginActivity.this) {
@@ -89,6 +96,9 @@ public class LoginActivity extends Activity {
 
 							@Override
 							public void onSuccess(Catalyze catalyze) {
+
+								// Created and logged in. Launch the main
+								// screen.
 
 								Intent intent = new Intent(LoginActivity.this,
 										MainActivity.class);
@@ -108,6 +118,12 @@ public class LoginActivity extends Activity {
 
 	}
 
+	/**
+	 * Turn the controls on/off.
+	 * 
+	 * @param enabled
+	 *            If the controls should be turned on (true) or off (false)
+	 */
 	protected void controlsEnabled(boolean enabled) {
 		EditText userEditText = (EditText) findViewById(R.id.userNameTextField);
 		EditText passwordEditText = (EditText) findViewById(R.id.passwordTextField);

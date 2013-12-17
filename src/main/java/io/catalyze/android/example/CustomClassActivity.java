@@ -23,20 +23,25 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 
+/**
+ * An example of how to Query, update and add entries to CustomClasses.
+ * 
+ * @author uphoff
+ * 
+ */
 public class CustomClassActivity extends Activity {
 
 	// An authenticated catalyze handle, to be obtained from the calling
 	// activity
 	private Catalyze catalyze;
 
-	private ExpandableListAdapter listAdapter;   
+	// Handles data inside the ExpandableListView
+	private ExpandableListAdapter listAdapter;
+
+	// Displays custom class data
 	private ExpandableListView expListView;
 
-	// List of custom class names for display in the ExpandableListView
-	// private List<String> listDataHeader = new ArrayList<String>();
-
-	// Map of child elements (custom classes) to display in the
-	// ExpandableListView
+	// Map of child elements (custom classes) to display
 	private HashMap<String, List<CustomClass>> listDataChild = new HashMap<String, List<CustomClass>>();
 
 	// Number of custom class operations left to perform
@@ -47,6 +52,7 @@ public class CustomClassActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_class);
 
+		// Get the Catalyze instance so we can make calls to teh backend
 		catalyze = (Catalyze) getIntent().getSerializableExtra("catalyze");
 		if (catalyze == null) {
 			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
@@ -55,11 +61,12 @@ public class CustomClassActivity extends Activity {
 			finish();
 		}
 
+		// Launches the custom class entry Activity to create a new instance
 		Button addButton = (Button) this.findViewById(R.id.ccAddEntry);
 		addButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				Intent intent = new Intent(CustomClassActivity.this,
 						CustomClassEditActivity.class);
 				intent.putExtra("catalyze", catalyze);
@@ -68,10 +75,17 @@ public class CustomClassActivity extends Activity {
 
 		});
 
+		// Query the backend to get custiom class information
 		fetchCustomClassInformation();
 
 	}
 
+	/**
+	 * Example method showing how multiple Query requests can be made
+	 * simultaneously using the integrated Volley request queue.
+	 * 
+	 * Used to populate the ExapndableListView. 
+	 */
 	private synchronized void fetchCustomClassInformation() {
 
 		if (fetchCount > 0) {
@@ -86,8 +100,10 @@ public class CustomClassActivity extends Activity {
 		// possible via the Volley networking library. Results may be returned
 		// in any order so be careful about the assumptions you make.
 		for (final String className : MyApplication.CUSTOM_CLASS_NAMES) {
+			// Create a new QUery for this custom class 
+			// No criteria are specified so it will return any entry
 			Query ccQuery = new Query(className, catalyze);
-			ccQuery.setPageSize(5);
+			ccQuery.setPageSize(5); // Max of 5 entries returned
 
 			CatalyzeListener<Query> handler = new CatalyzeListener<Query>(this) {
 
@@ -147,20 +163,17 @@ public class CustomClassActivity extends Activity {
 							.asList(MyApplication.CUSTOM_CLASS_NAMES)),
 					listDataChild);
 
-			// for (String key: listDataHeader) {
-			// Log.i("Catalyze", "Added " + listDataChild.get(key).size() +
-			// " items for '" + key + "'");
-			// }
-
-			// setting list adapter
+			// Set the list view's backing data
 			expListView.setAdapter(listAdapter);
 
+			// Set the behavior for when an entry is clicked. 
 			expListView.setOnChildClickListener(new OnChildClickListener() {
 
 				@Override
 				public boolean onChildClick(ExpandableListView parent, View v,
 						int groupPosition, int childPosition, long id) {
 
+					// Edit the selected entry
 					Intent intent = new Intent(CustomClassActivity.this,
 							CustomClassEditActivity.class);
 					intent.putExtra("customClass", listAdapter.getCustomClass(
@@ -198,6 +211,8 @@ public class CustomClassActivity extends Activity {
 
 				final CustomClass customClass = (CustomClass) data
 						.getSerializableExtra("customClass");
+				
+				// Save a new CustomClass
 				customClass
 						.createEntry(new CatalyzeListener<CustomClass>(this) {
 
@@ -237,6 +252,7 @@ public class CustomClassActivity extends Activity {
 				boolean delete = data.getBooleanExtra("delete", false);
 
 				if (cc != null && !delete) {
+					// Update an existing CustomClass entry
 					cc.updateEntry(new CatalyzeListener<CustomClass>(this) {
 
 						@Override
@@ -260,6 +276,7 @@ public class CustomClassActivity extends Activity {
 					});
 
 				} else if (cc != null && delete) {
+					// Delete a CustomClass
 					cc.deleteEntry(new CatalyzeListener<CustomClass>(this) {
 
 						@Override

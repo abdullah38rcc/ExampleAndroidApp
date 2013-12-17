@@ -26,6 +26,7 @@ import android.widget.Toast;
  */
 public class CustomClassEditActivity extends Activity {
 
+	// Authenticated Catalyze instance (used for creating a new CustomClass instance)
 	private Catalyze catalyze;
 
 	@Override

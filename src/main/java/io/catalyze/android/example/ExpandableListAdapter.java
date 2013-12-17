@@ -6,7 +6,6 @@ package io.catalyze.android.example;
 
 import io.catalyze.sdk.android.CustomClass;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,35 +13,39 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
   
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-	private Context _context;
-	private List<String> _listDataHeader; // header titles
+	private Context context;
+	private List<String> listDataHeader; // header titles
+	
 	// child data in format of header title, child title
-	private HashMap<String, List<CustomClass>> _listDataChild;
+	private HashMap<String, List<CustomClass>> listDataChild;
 
 	public ExpandableListAdapter(Context context, List<String> listDataHeader,
 			HashMap<String, List<CustomClass>> listChildData) {
-		this._context = context;
-		this._listDataHeader = listDataHeader;
-		this._listDataChild = listChildData;      
+		this.context = context;
+		this.listDataHeader = listDataHeader;
+		this.listDataChild = listChildData;      
 	}
 
+	/**
+	 * Get a custom class entry based on its position in the list. 
+	 * @param group The group index
+	 * @param position The position index within the group
+	 * @return The CustomClass entry
+	 */
 	public CustomClass getCustomClass(int group, int position) {
-		String name = this._listDataHeader.get(group);
-		return this._listDataChild.get(name).get(position);
+		String name = this.listDataHeader.get(group);
+		return this.listDataChild.get(name).get(position);
 	}
 
 	@Override
 	public Object getChild(int groupPosition, int childPosititon) {
-		return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+		return this.listDataChild.get(this.listDataHeader.get(groupPosition))
 				.get(childPosititon).toString();
 	}
 
@@ -58,7 +61,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		final String childText = (String) getChild(groupPosition, childPosition);
 
 		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this._context
+			LayoutInflater infalInflater = (LayoutInflater) this.context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.cc_list_items, null);
 		}
@@ -72,18 +75,18 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+		return this.listDataChild.get(this.listDataHeader.get(groupPosition))
 				.size();
 	}
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		return this._listDataHeader.get(groupPosition);
+		return this.listDataHeader.get(groupPosition);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return this._listDataHeader.size();
+		return this.listDataHeader.size();
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 		String headerTitle = (String) getGroup(groupPosition);
 		if (convertView == null) {
-			LayoutInflater infalInflater = (LayoutInflater) this._context
+			LayoutInflater infalInflater = (LayoutInflater) this.context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = infalInflater.inflate(R.layout.cc_list_group, null);
 
@@ -122,6 +125,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 
 	public String getCustomClassName(int groupPosition) {
-		return this._listDataHeader.get(groupPosition);
+		return this.listDataHeader.get(groupPosition);
 	}
 }
