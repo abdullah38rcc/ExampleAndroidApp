@@ -14,14 +14,18 @@ import com.android.volley.toolbox.Volley;
  */
 public class MyApplication extends Application {
 
-	public static final String[] CUSTOM_CLASS_NAMES = { "address", "visits" };
+	// Define your custom class names below
+	public static final String[] CUSTOM_CLASS_NAMES = { };
 	
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Catalyze.API_KEY = "1f077962-18cc-4ade-8075-d9fa1642f316";
-        Catalyze.IDENTIFIER = "android.example";
+        // Enter your API key here
+        Catalyze.API_KEY = "your API key";
+        
+        // Enter your app name here
+        Catalyze.IDENTIFIER = "your app name";
         
         
         
