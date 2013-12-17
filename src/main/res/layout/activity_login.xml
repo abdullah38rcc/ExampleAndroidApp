@@ -29,7 +29,8 @@
         android:ems="10"
         android:layout_below="@+id/textView1"
         android:inputType="text|textAutoComplete|textAutoCorrect|textEmailAddress"
-        android:text="test@user.com" >
+        android:hint="Enter user name"
+        android:text="" >
 
         <requestFocus />
     </EditText>
@@ -43,7 +44,8 @@
         android:layout_marginTop="38dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="testpass" >
+        android:hint="Enter password"
+        android:text="" >
     </EditText>
     
    
