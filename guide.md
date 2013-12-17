@@ -1,45 +1,81 @@
-Using the catalyze.io Android SDK
+Catalyze.io Android SDK
 =======
-The first thing you must do is set-up an Application on the developer console. You will need the following information about your Application: api key and application id. After this is complete, you must make a Catalyze instance with your API key and App ID like this:
 
-    Catalyze catalyze = new Catalyze( API KEY, APPID);
+Thanks for your interest in the [http://www.catalyze.io](Catalyze) Android SDK. Feel free to reach out to us at <mailto:support@catalyze.io> if you have questions. 
 
-Users 
----
+Getting Started
+----------
+Before working through this guide you will need a developer account. Please sign up at [http://developer.catalyze.io/](http://developer.catalyze.io/). You may also want to grab the ExamplAndroidApp project from [https://github.com/catalyzeio](GitHub) for more examples and a working shell application that makes use of the SDK. The project's README.md provides details for getting started as well. 
 
-###Log in
+The first thing you must do is set-up an Application on the developer console. You will need the following information about your Application: api key and application id. 
+After this is complete, you must set these values in the app:
 
+    Catalyze.API_KEY = "your new API key";
+    Catalyze.IDENTIFIER = "your app name";
+
+Now you are ready to use the SDK. You will next need to acquire an authenticated Catalyze instance by logging in a user or creating a new user. The next section covers these steps.  
+
+All networking calls made using the Catalyze Android SDK are made asynchronously and sent to the Catalyze API. To simplify the process of making Catalyze API calls we have provided a callback interface that allows you to easily define what you want to do with.
+
+To make Catalyze API calls you will need to provide a CatalyzeListener of the appropriate type to the SDK method making the API call. CatalyzeListener is an abstract class with the methods onSuccess() and onError(), that you must define for handling asynchronous responses from API calls. The type that is returned when onSuccess is called is determined by the individual method call, while onError will always receive a CatalyzeError, which is an error wrapper class that can contain a wide variety of possible errors.
+
+
+Log In or Create a User
+-------------
+
+Here is an example of how to create and use a CatalyzeListener to retrieve a CustomClass:
 To log in a user call
 
-    CatalyzeUser myUser;
-    Catalyze.getUser("John@gmail.com", "password", createExampleResponseHandler());
+    Catalyze.authenticate("John@example.com", "password", createExampleResponseHandler());
 
-Here the CatalyzeListener passed to the log in method is almost exactly the same as it was before for CustomClass, with the exception that it must expect a response of type CatalyzeUser, whereas before a CustomClass response was expected.
+To sign up a new user and log in call
 
-    private CatalyzeListener<CatalyzeUser> createExampleResponseHandler() {
-        new CatalyzeListener<CatalyzeUser>() {
+    Catalyze.signUp("Bob@example.com", "password", "Bob", "Jones", createExampleResponseHandler());
+
+In both cases a CatalyzeListener is created to provide callbacks when the background network operation completes. The onSuccess() method will be called if the user is successfully authenticated. Otherwise onError() will be called with whatever error information is available.  
+
+    private CatalyzeListener<Catalyze> createExampleResponseHandler(Context context) {
+
+        new CatalyzeListener<Catalyze>(context) {
         
                 @Override
-                public void onError(CatalyzeError response) {
-                    //What to do if error occurs
+                public void onError(CatalyzeException response) {
+                    // What to do if error occurs
                 }
     
                 @Override
-                public void onSuccess(CatalyzeUser response) {
-                    //What to do with successful response
-                    myUser = response;
+                public void onSuccess(Catalyze response) {
+                    // Save this authenticated instance for all other operations
                 }
             };
 
-###Logout
+Logout the Current User
+------------
 
-To logout call
+To logout the user assocoated with an authenticated Catalyze instance call
 
-    catalyze.logoutCurrentUser(catalyzeListener);
+    catalyze.signOut(catalyzeListener); 
 
-This will clear all locally stored information about the User including session information and tell the API to destroy your session token.
+Where *catalyzeListener* is defined as
 
-###Updating and Saving your User
+    CatalyzeListener<CatalyzeUser> catalyzeListener = new CatalyzeListener<CatalyzeUser>(
+						MainActivity.this) {
+
+					@Override
+					public void onError(CatalyzeException error) {
+                        // Handle errors here
+					}
+
+					@Override
+					public void onSuccess(CatalyzeUser response) {
+                        // Returns the user that just logged off
+					}
+				};
+
+This will clear all locally stored information about the User including session information and tell the API to destroy your session token. The Catalyze instance will no longer be usable.
+
+Updating the User
+--------------
 
 A CatalyzeUser also has a list of supported fields that are validated by the catalyze.io API.  These are:
 
@@ -57,16 +93,34 @@ A CatalyzeUser also has a list of supported fields that are validated by the cat
 
 Now that we are logged into an Application lets save some supported fields to our User. If we wanted to update our first name, last name, age, and an extra field:
 
+    CatalyzeUser currentUser = catalyze.getAuthenticatedUser();
     currentUser.setFirstName("John");
     currentUser.setLastName("Smith");
     currentUser.setAge("55");
     currentUser.setExtra("on_medication", true);
+    currentUser.update(catalyzeListener);
+
+Where *catalyzeListener* is defined as
+
+    CatalyzeListener<CatalyzeUser> catalyzeListener = new CatalyzeListener<CatalyzeUser>(
+						MainActivity.this) {
+
+					@Override
+					public void onError(CatalyzeException error) {
+                        // Handle errors here
+					}
+
+					@Override
+					public void onSuccess(CatalyzeUser response) {
+                        // Returns the user that was just updated
+					}
+				};
 
 Custom Classes
 ----
 A CustomClass by itself, represents a CustomClass that can be stored on the catalyze.io API.  These custom classes must be created in the developer console before being used or referenced within an app or the API will return a 4XX status code. 
 
-    CustomClass myClass = CustomClass.getInstance(user);
+    CustomClass myClass = catalyze.getCustomClassInstance("class_name");
 
 Now that you have a CustomClass you can save values, retrieve values, and create new entries on the catalyze.io API.
 
@@ -76,51 +130,9 @@ Now that you have a CustomClass you can save values, retrieve values, and create
 
 When calling createEntry, the unique id of the class will automatically be saved, however if you wish to perform an API call on an existing the CustomClass entry you will need to first set the Custom Class Id.
 
-    myClass.setID(id);
+    customClass.setID(id);
 
-###Saving Your Data
-
-All networking calls made using the Catalyze Android SDK to save data to the Catalyze API are made asynchronously. To simplify the process of making Catalyze API calls we have provided a callback interface that allows you to easily define what you want to do with.
-
-To make Catalyze API calls you will need to provide a CatalyzeListener of the appropriate type to the SDK method making the API call. CatalyzeListener is an abstract class with the methods onSuccess() and onError(), that you must define for handling asynchronous responses from API calls. The type that is returned when onSuccess is called is determined by the individual method call, while onError will always receive a CatalyzeError, which is an error wrapper class that can contain a wide variety of possible errors.
-
-Here is an example of how to create and use a CatalyzeListener to retrieve a CustomClass:
-
-    myClass.getEntry(entryId, createExampleResponseHandler());
-
-    private CatalyzeListener<CustomClass> createExampleResponseHandler() {
-        new CatalyzeListener<CustomClass>() {
-        
-                @Override
-                public void onError(CatalyzeError response) {
-                    //What to do if error occurs
-                }
-    
-                @Override
-                public void onSuccess(CustomClass response) {
-                    //What to do with successful response
-                    myClass = response;
-                }
-            };
-
-Alternatively, if you prefer you can delcare a CatalyzeListener in line as well:
-
-    myClass.getEntry(entryId, new CatalyzeListener<CustomClass>() {
-
-                @Override
-                public void onError(CatalyzeError response) {
-                    //What to do if error occurs
-                }
-                @Override
-                public void onSuccess(CustomClass response) {
-                    //What to do with successful response
-                    myClass = response;
-                }
-            };
-        );
-
-###Referenced Objects
-On the catalyze.io API you can also have references to a custom class inside another custom class.  Let's say you have a custom class called "MovieStar" and another called "Address".  When you create "MovieStar" in the developer console, you can specify a column as being a reference.  References can be retrieved by using the CustomClass reference methods.
+For examples of working with CustomClasses see the ExampleAndroidApp's CustomClassActivity.java source. 
 
 Query
 ------
@@ -133,15 +145,20 @@ The second two are "queryField" and "queryValue". "queryField" is the data colum
 
 To use CatalyzeQuery you must initialize the object with the name of the custom class that is being queried.
 
-    Query query = new Query("myCustomClass", authenticatedUser);  
+    Query query = catalyze.getQueryInstance("myCustomClass");  
     query.setSearchBy(data);
     query.setField(name);
     query.setPageSize(pageSize);
     query.setPageNumber(pageNumber);
     query.executeQuery(catalyzeListener);
 
-If you want to query your own Entries, you simply set the "queryField" to be "parentId" and the "queryValue" to the User's id.
+See the ExampleAndroidApp's CustomClassActivity.java source for an example of how to run concurrent queries and process the results. 
 
-    query.setField(parentId);
-    query.setValue(userId);
+Other Features
+---------
+The SDK has numerous other features that are shown by example in the ExampleAndroidApp's source. Please refer to that code for additional examples. Let us know if you don't see a feature that you need in your app. 
 
+Contact
+------
+
+We are eager to help you build powerful mobile health care apps. Feel free to contact us at <mailto:support@catalyze.io> with any feature requests, suggestions, etc. 
