@@ -3,9 +3,6 @@ package io.catalyze.android.example;
 import io.catalyze.sdk.android.Catalyze;
 import android.app.Application;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 /**
  * Defines application-specific details, all of which need to be defined in the developer portal:
  * - Custom class names (CUSTOM_CLASS_NAMES)

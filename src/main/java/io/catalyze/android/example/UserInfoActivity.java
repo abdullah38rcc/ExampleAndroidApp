@@ -4,7 +4,6 @@ import io.catalyze.sdk.android.Catalyze;
 import io.catalyze.sdk.android.CatalyzeException;
 import io.catalyze.sdk.android.CatalyzeListener;
 import io.catalyze.sdk.android.CatalyzeUser;
-import io.catalyze.sdk.android.UMLS;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;

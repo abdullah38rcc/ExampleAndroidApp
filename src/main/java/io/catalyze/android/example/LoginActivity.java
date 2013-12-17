@@ -11,7 +11,7 @@ import android.widget.Toast;
 import io.catalyze.sdk.android.*;
 
 /**
- * A simple Actvitiy that will log in an existing user or create a new one.
+ * A simple Activity that will log in an existing user or create a new one.
  * Launches MainActivity after a successful authentication or user creation
  * operation returns from the backend.
  * 
