@@ -296,7 +296,7 @@ public class CustomClassActivity extends Activity {
 
 							fetchCustomClassInformation();
 						}
-					});
+					});   
 
 				}
 			}

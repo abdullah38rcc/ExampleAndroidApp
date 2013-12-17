@@ -38,7 +38,7 @@ public class LoginActivity extends Activity {
 				String password = passwordEditText.getText().toString();
 
 				// To do anything we need an authenticated Catalyze instance
-				Catalyze.authenticate(userName, password, LoginActivity.this,
+				Catalyze.authenticate(userName, password,
 						new CatalyzeListener<Catalyze>(LoginActivity.this) {
 
 							@Override
@@ -83,8 +83,7 @@ public class LoginActivity extends Activity {
 
 				// Sign up a new user and log in in one shot.
 				Catalyze.signUp(userName, password, firstName, lastName,
-						LoginActivity.this, new CatalyzeListener<Catalyze>(
-								LoginActivity.this) {
+						new CatalyzeListener<Catalyze>(LoginActivity.this) {
 
 							@Override
 							public void onError(CatalyzeException ce) {
