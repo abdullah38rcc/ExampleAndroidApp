@@ -5,7 +5,7 @@ Thanks for your interest in the [http://www.catalyze.io](Catalyze) Android SDK. 
 
 Getting Started
 ----------
-Before working through this guide you will need a developer account. Please sign up at [http://developer.catalyze.io/](http://developer.catalyze.io/). You may also want to grab the ExamplAndroidApp project from [https://github.com/catalyzeio](GitHub) for more examples and a working shell application that makes use of the SDK. The project's README.md provides details for getting started as well. 
+Before working through this guide you will need a developer account. Please sign up at [http://developer.catalyze.io/](http://developer.catalyze.io/). You may also want to grab the [ExamplAndroidApp](https://github.com/catalyzeio/ExampleAndroidApp) project from [GitHub](https://github.com/catalyzeio) for more examples and a working shell application that makes use of the SDK. The project's README.md provides details for getting started as well. 
 
 The first thing you must do is set-up an Application on the developer console. You will need the following information about your Application: api key and application id. 
 After this is complete, you must set these values in the app:
