@@ -1,7 +1,7 @@
 Catalyze.io Android SDK
 =======
 
-Thanks for your interest in the [http://www.catalyze.io](Catalyze) Android SDK. Feel free to reach out to us at <mailto:support@catalyze.io> if you have questions. 
+Thanks for your interest in the [Catalyze](http://www.catalyze.io) Android SDK. Feel free to reach out to us at <mailto:support@catalyze.io> if you have questions. 
 
 Getting Started
 ----------
