@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="/Users/ault/github/android-example-catalyzeio/src/main/res" >
+            <file
+                name="ic_launcher"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/drawable-hdpi/ic_launcher.png"
+                qualifiers="hdpi-v4"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/drawable-mdpi/ic_launcher.png"
+                qualifiers="mdpi-v4"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/drawable-xhdpi/ic_launcher.png"
+                qualifiers="xhdpi-v4"
+                type="drawable" />
+            <file
+                name="activity_login"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/activity_login.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_main"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/activity_main.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_umls"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/activity_umls.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_user_info"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/activity_user_info.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="cc_list_group"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/cc_list_group.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="cc_list_items"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/cc_list_items.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="custom_class"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/custom_class.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="custom_class_edit"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/custom_class_edit.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="main"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/menu/main.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/values/dimens.xml"
+                qualifiers="" >
+                <dimen name="activity_horizontal_margin" >16dp
+                </dimen>
+                <dimen name="activity_vertical_margin" >16dp
+                </dimen>
+            </file>
+            <file
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/values/strings.xml"
+                qualifiers="" >
+                <string name="action_settings" >Settings
+                </string>
+                <string name="app_name" >Catalyze Example
+                </string>
+
+                <string-array name="umls_code_sets" >
+                    <item>
+SnomedCT
+                    </item>
+                    <item>
+LOINC
+                    </item>
+                    <item>
+ICD10
+                    </item>
+                    <item>
+ICD9
+                    </item>
+                    <item>
+RxNorm
+                    </item>
+                </string-array>
+            </file>
+            <file
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/values/styles.xml"
+                qualifiers="" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="android:Theme.Light" >
+
+                    <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+                    -->
+                </style>
+
+                <style
+                    name="AppTheme"
+                    parent="AppBaseTheme" >
+
+                    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+                </style>
+            </file>
+            <file
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/values-sw720dp-land/dimens.xml"
+                qualifiers="sw720dp-land-v13" >
+                <dimen name="activity_horizontal_margin" >128dp
+                </dimen>
+            </file>
+            <file
+                name="activity_file_management"
+                path="/Users/ault/github/android-example-catalyzeio/src/main/res/layout/activity_file_management.xml"
+                qualifiers=""
+                type="layout" />
+        </source>
+        <source path="/Users/ault/github/android-example-catalyzeio/build/generated/res/rs/debug" />
+        <source path="/Users/ault/github/android-example-catalyzeio/build/generated/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/ault/github/android-example-catalyzeio/src/debug/res" />
+    </dataSet>
+
+</merger>

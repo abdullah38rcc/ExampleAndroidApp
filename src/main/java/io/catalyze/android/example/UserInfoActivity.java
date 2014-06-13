@@ -16,7 +16,6 @@ import android.widget.Toast;
  * Simple screen allowing the user's name to be updated.
  * 
  * @author uphoff
- * 
  */
 public class UserInfoActivity extends Activity {
 
@@ -25,16 +24,8 @@ public class UserInfoActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_info);
 
-		// Get the Catalyze instance from the intent and fail if it is not
-		// present
-		Catalyze catalyze = (Catalyze) getIntent().getSerializableExtra(
-				"catalyze");
-		if (catalyze == null) {
-			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
-					.show();
-
-			finish();
-		}
+		// Get the Catalyze instance
+		Catalyze catalyze = Catalyze.getInstance(this);
 
 		final CatalyzeUser user = catalyze.getAuthenticatedUser();
 
@@ -42,31 +33,29 @@ public class UserInfoActivity extends Activity {
 		userNameTextView.setText("User name: " + user.getUsername());
 
 		final EditText firstName = (EditText) findViewById(R.id.userFirstNameEditText);
-		firstName.setText(user.getFirstName());
+		firstName.setText(user.getName().getFirstName());
 
 		final EditText lastName = (EditText) findViewById(R.id.userLastNameEditText);
-		lastName.setText(user.getLastName());
+		lastName.setText(user.getName().getLastName());
 
 		final Button updateButton = (Button) findViewById(R.id.userUpdateButton);
 
 		// Create a handler for updates to the backend
-		final CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>(
-				this) {
+        final CatalyzeListener<CatalyzeUser> handler = new CatalyzeListener<CatalyzeUser>() {
+            @Override
+            public void onError(CatalyzeException response) {
+                Toast.makeText(UserInfoActivity.this,
+                        "Update user failed: " + response.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
 
-			@Override
-			public void onError(CatalyzeException ce) {
-				Toast.makeText(UserInfoActivity.this,
-						"Update user failed: " + ce.getMessage(),
-						Toast.LENGTH_SHORT).show();
-			}
-
-			@Override
-			public void onSuccess(CatalyzeUser response) {
-				Toast.makeText(UserInfoActivity.this,
-						"User details updated successfully.",
-						Toast.LENGTH_SHORT).show();
-			}
-		};
+            @Override
+            public void onSuccess(CatalyzeUser response) {
+                Toast.makeText(UserInfoActivity.this,
+                        "User details updated successfully.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
 
 		updateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -74,8 +63,8 @@ public class UserInfoActivity extends Activity {
 				// Update the fields in the instance
 				// Changes are only local until update() is called and the
 				// handler returns successfully.
-				user.setFirstName(firstName.getText().toString());
-				user.setLastName(lastName.getText().toString());
+				user.getName().setFirstName(firstName.getText().toString());
+				user.getName().setLastName(lastName.getText().toString());
 
 				// Update on the backend using the provided handler
 				user.update(handler);

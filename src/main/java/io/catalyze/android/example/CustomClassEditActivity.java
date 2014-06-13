@@ -1,7 +1,6 @@
 package io.catalyze.android.example;
 
-import io.catalyze.sdk.android.Catalyze;
-import io.catalyze.sdk.android.CustomClass;
+import io.catalyze.sdk.android.CatalyzeEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +16,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * This example shows how to edit and create CustomClass objects. Results are
  * returned to the calling activity.
@@ -26,25 +29,10 @@ import android.widget.Toast;
  */
 public class CustomClassEditActivity extends Activity {
 
-	// Authenticated Catalyze instance (used for creating a new CustomClass instance)
-	private Catalyze catalyze;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_class_edit);
-
-		// Operations using the Catalyze SDK need an authenticated Catalyze handle.
-		// In this case we pass it along via the Intent
-		catalyze = (Catalyze) getIntent().getSerializableExtra("catalyze");
-		
-		// Can't proceed without a Catalyze
-		if (catalyze == null) {
-			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
-					.show();
-
-			finish();
-		}
 
 		// For selecting custom class entry type on a new entry
 		final Spinner classSpinner = (Spinner) this
@@ -56,7 +44,7 @@ public class CustomClassEditActivity extends Activity {
 
 		// A custom class instance, if any, can be found in the extras of the Intent 
 		// When missing indicates that this operation is for creating a new entry
-		final CustomClass customClass = (CustomClass) this.getIntent()
+		final CatalyzeEntry customClass = (CatalyzeEntry)this.getIntent()
 				.getSerializableExtra("customClass");
 
 		if (customClass == null) {
@@ -71,12 +59,22 @@ public class CustomClassEditActivity extends Activity {
 			
 			deleteButton.setVisibility(View.GONE); // Can't delete a new entry
 		} else {
-			this.setTitle("Edit " + customClass.getName() + " Entry");
+            customClass.setClassName(this.getIntent().getStringExtra("className"));
+
+			this.setTitle("Edit " + customClass.getClassName() + " Entry");
 			classSpinner.setVisibility(View.GONE); // Don't need the class selector
 			
 			EditText jsonEditText = (EditText) this
 					.findViewById(R.id.ccEditJsonTextView);
-			jsonEditText.setText(customClass.toString(2));
+
+            // set the value of the text field to the current content of the custom class entry
+            try {
+                // first, try and pretty print it
+                jsonEditText.setText(new JSONObject(customClass.getContent()).toString(2));
+            } catch (JSONException je) {
+                jsonEditText.setText(new JSONObject(customClass.getContent()).toString());
+            }
+
 			deleteButton.setVisibility(View.VISIBLE);
 			deleteButton.setOnClickListener(new OnClickListener() {
 
@@ -87,6 +85,7 @@ public class CustomClassEditActivity extends Activity {
 																		// instance
 																		// to
 																		// delete
+                    returnIntent.putExtra("className", customClass.getClassName());
 					returnIntent.putExtra("delete", true); // Delete this on
 															// return
 					setResult(RESULT_OK, returnIntent);
@@ -119,13 +118,27 @@ public class CustomClassEditActivity extends Activity {
 					// Send the updated/new custom class back to the calling
 					// activity
 					Intent returnIntent = new Intent();
-					if (customClass == null) {
-						CustomClass ccNew = catalyze.getCustomClassInstance(
-								(String) classSpinner.getSelectedItem(), obj);
-						returnIntent.putExtra("customClass", ccNew);
-					} else {
-						returnIntent.putExtra("customClass", customClass);
-					}
+
+                    // have to convert the JSON to a Map
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    Iterator<String> iter = obj.keys();
+                    while (iter.hasNext()) {
+                        String key = iter.next();
+                        try {
+                            map.put(key, obj.get(key));
+                        } catch (JSONException je) {
+                            System.out.println("Error converting text to Map at key " + key);
+                        }
+                    }
+
+                    CatalyzeEntry entry = customClass;
+					if (entry == null) {
+                        entry = new CatalyzeEntry(
+                                (String) classSpinner.getSelectedItem());
+                    }
+                    entry.setContent(map);
+                    returnIntent.putExtra("customClass", entry);
+                    returnIntent.putExtra("className", entry.getClassName());
 
 					setResult(RESULT_OK, returnIntent);
 					finish();
@@ -134,5 +147,4 @@ public class CustomClassEditActivity extends Activity {
 
 		});
 	}
-
 }

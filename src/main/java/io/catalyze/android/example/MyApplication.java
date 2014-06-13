@@ -1,6 +1,5 @@
 package io.catalyze.android.example;
 
-import io.catalyze.sdk.android.Catalyze;
 import android.app.Application;
 
 /**
@@ -18,15 +17,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Enter your API key here
-        Catalyze.API_KEY = "your API key";
-        
-        // Enter your app name here
-        Catalyze.IDENTIFIER = "your app name";
-        
-        
-        
+        // Enter your API key and app id in the manifest file as meta-data
+        // API key must be of the form "<type> <identifier> <id>"
     }
-
-
 }

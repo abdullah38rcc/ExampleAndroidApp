@@ -4,7 +4,7 @@ package io.catalyze.android.example;
  * Credit: http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  */
 
-import io.catalyze.sdk.android.CustomClass;
+import io.catalyze.sdk.android.CatalyzeEntry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +23,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	private List<String> listDataHeader; // header titles
 	
 	// child data in format of header title, child title
-	private HashMap<String, List<CustomClass>> listDataChild;
+	private HashMap<String, List<CatalyzeEntry>> listDataChild;
 
 	public ExpandableListAdapter(Context context, List<String> listDataHeader,
-			HashMap<String, List<CustomClass>> listChildData) {
+			HashMap<String, List<CatalyzeEntry>> listChildData) {
 		this.context = context;
 		this.listDataHeader = listDataHeader;
 		this.listDataChild = listChildData;      
@@ -38,7 +38,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	 * @param position The position index within the group
 	 * @return The CustomClass entry
 	 */
-	public CustomClass getCustomClass(int group, int position) {
+	public CatalyzeEntry getCustomClass(int group, int position) {
 		String name = this.listDataHeader.get(group);
 		return this.listDataChild.get(name).get(position);
 	}

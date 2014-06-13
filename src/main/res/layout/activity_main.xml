@@ -39,18 +39,11 @@
             android:text="UMLS Quick Test" />
 
         <Button
-            android:id="@+id/mainFileUploadButton"
+            android:id="@+id/mainFileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:text="Upload a File" />
-
-        <Button
-            android:id="@+id/mainFileDownloadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:text="Download a File" />
+            android:text="File Management" />
     </LinearLayout>
 
     <Button

@@ -5,7 +5,6 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Code Set"
@@ -18,7 +17,6 @@
         android:entries="@array/umls_code_sets" />
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UMLS Lookup"
@@ -29,13 +27,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="Start typing to lookup UMLS data." >
+        android:hint="Start typing to lookup UMLS data." >
 
         <requestFocus />
     </AutoCompleteTextView>
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UMLS Entry"

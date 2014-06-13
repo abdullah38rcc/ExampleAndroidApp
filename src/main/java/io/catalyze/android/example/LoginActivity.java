@@ -16,14 +16,17 @@ import io.catalyze.sdk.android.*;
  * operation returns from the backend.
  * 
  * @author uphoff
- * 
  */
 public class LoginActivity extends Activity {
+
+    Catalyze catalyze;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+
+        catalyze = Catalyze.getInstance(this);
 
 		final EditText userEditText = (EditText) findViewById(R.id.userNameTextField);
 		final EditText passwordEditText = (EditText) findViewById(R.id.passwordTextField);
@@ -38,34 +41,29 @@ public class LoginActivity extends Activity {
 				String password = passwordEditText.getText().toString();
 
 				// To do anything we need an authenticated Catalyze instance
-				Catalyze.authenticate(userName, password,
-						new CatalyzeListener<Catalyze>(LoginActivity.this) {
+                catalyze.authenticate(userName, password, new CatalyzeListener<CatalyzeUser>() {
+                    @Override
+                    public void onError(CatalyzeException response) {
+                        // Could be a bad user/password or a user that
+                        // does not exists
+                        Toast.makeText(LoginActivity.this,
+                                "Login failed: " + response.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        controlsEnabled(true);
+                    }
 
-							@Override
-							public void onError(CatalyzeException ce) {
-								// Could be a bad user/password or a user that
-								// does not exists
-								Toast.makeText(LoginActivity.this,
-										"Login failed: " + ce.getMessage(),
-										Toast.LENGTH_SHORT).show();
-								controlsEnabled(true);
-							}
+                    @Override
+                    public void onSuccess(CatalyzeUser response) {
+                        // The user is authenticated.
+                        // Send the instance to the main screen.
 
-							@Override
-							public void onSuccess(Catalyze catalyze) {
+                        Intent intent = new Intent(LoginActivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
 
-								// The user is authenticated.
-								// Send the instance to the main screen.
-
-								Intent intent = new Intent(LoginActivity.this,
-										MainActivity.class);
-								intent.putExtra("catalyze", catalyze);
-								startActivity(intent);
-
-								LoginActivity.this.finish();
-							}
-
-						});
+                        LoginActivity.this.finish();
+                    }
+                });
 
 				// Disable controls while authenticating in the background
 				controlsEnabled(false);
@@ -75,39 +73,46 @@ public class LoginActivity extends Activity {
 		signUpButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String userName = userEditText.getText().toString();
-				String password = passwordEditText.getText().toString();
+				final String userName = userEditText.getText().toString();
+				final String password = passwordEditText.getText().toString();
 
 				String firstName = "Bob";
 				String lastName = "Jones";
 
 				// Sign up a new user and log in in one shot.
-				Catalyze.signUp(userName, password, firstName, lastName,
-						new CatalyzeListener<Catalyze>(LoginActivity.this) {
+                catalyze.signUp(userName, password, firstName, lastName, userName, new CatalyzeListener<CatalyzeUser>() {
+                    @Override
+                    public void onError(CatalyzeException response) {
+                        Toast.makeText(LoginActivity.this,
+                                "Signup failed: " + response.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        controlsEnabled(true);
+                    }
 
-							@Override
-							public void onError(CatalyzeException ce) {
-								Toast.makeText(LoginActivity.this,
-										"Signup failed: " + ce.getMessage(),
-										Toast.LENGTH_SHORT).show();
-								controlsEnabled(true);
-							}
+                    @Override
+                    public void onSuccess(CatalyzeUser response) {
+                        // Created and not logged in. Login and show main activity
 
-							@Override
-							public void onSuccess(Catalyze catalyze) {
+                        catalyze.authenticate(userName, password, new CatalyzeListener<CatalyzeUser>() {
+                            @Override
+                            public void onError(CatalyzeException e) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Signin failed: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                controlsEnabled(true);
+                            }
 
-								// Created and logged in. Launch the main
-								// screen.
+                            @Override
+                            public void onSuccess(CatalyzeUser catalyzeUser) {
+                                Intent intent = new Intent(LoginActivity.this,
+                                        MainActivity.class);
+                                startActivity(intent);
 
-								Intent intent = new Intent(LoginActivity.this,
-										MainActivity.class);
-								intent.putExtra("catalyze", catalyze);
-								startActivity(intent);
-
-								LoginActivity.this.finish();
-							}
-
-						});
+                                LoginActivity.this.finish();
+                            }
+                        });
+                    }
+                });
 
 				// Disable controls during signup
 				controlsEnabled(false);

@@ -1,9 +1,8 @@
 package io.catalyze.android.example;
 
-import io.catalyze.sdk.android.Catalyze;
 import io.catalyze.sdk.android.CatalyzeException;
 import io.catalyze.sdk.android.CatalyzeListener;
-import io.catalyze.sdk.android.CustomClass;
+import io.catalyze.sdk.android.CatalyzeEntry;
 import io.catalyze.sdk.android.Query;
 
 import java.util.ArrayList;
@@ -29,18 +28,12 @@ import android.widget.Toast;
  */
 public class CustomClassActivity extends Activity {
 
-	// An authenticated catalyze handle, to be obtained from the calling
-	// activity
-	private Catalyze catalyze;
 
 	// Handles data inside the ExpandableListView
 	private ExpandableListAdapter listAdapter;
 
-	// Displays custom class data
-	private ExpandableListView expListView;
-
 	// Map of child elements (custom classes) to display
-	private HashMap<String, List<CustomClass>> listDataChild = new HashMap<String, List<CustomClass>>();
+	private HashMap<String, List<CatalyzeEntry>> listDataChild = new HashMap<String, List<CatalyzeEntry>>();
 
 	// Number of custom class operations left to perform
 	private int fetchCount;
@@ -50,15 +43,6 @@ public class CustomClassActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_class);
 
-		// Get the Catalyze instance so we can make calls to teh backend
-		catalyze = (Catalyze) getIntent().getSerializableExtra("catalyze");
-		if (catalyze == null) {
-			Toast.makeText(this, "No 'catalyze' provided. ", Toast.LENGTH_SHORT)
-					.show();
-
-			finish();
-		}
-
 		// Launches the custom class entry Activity to create a new instance
 		Button addButton = (Button) this.findViewById(R.id.ccAddEntry);
 		addButton.setOnClickListener(new OnClickListener() {
@@ -67,13 +51,12 @@ public class CustomClassActivity extends Activity {
 			public void onClick(View view) {
 				Intent intent = new Intent(CustomClassActivity.this,
 						CustomClassEditActivity.class);
-				intent.putExtra("catalyze", catalyze);
 				startActivityForResult(intent, 1);
 			}
 
 		});
 
-		// Query the backend to get custiom class information
+		// Query the backend to get custom class information
 		fetchCustomClassInformation();
 
 	}
@@ -98,37 +81,28 @@ public class CustomClassActivity extends Activity {
 		// possible via the Volley networking library. Results may be returned
 		// in any order so be careful about the assumptions you make.
 		for (final String className : MyApplication.CUSTOM_CLASS_NAMES) {
-			// Create a new QUery for this custom class 
+			// Create a new Query for this custom class
 			// No criteria are specified so it will return any entry
-			Query ccQuery = new Query(className, catalyze);
+			Query ccQuery = new Query(className);
 			ccQuery.setPageSize(5); // Max of 5 entries returned
 
-			CatalyzeListener<Query> handler = new CatalyzeListener<Query>(this) {
-
-				@Override
-				public void onError(CatalyzeException ce) {
-					Toast.makeText(CustomClassActivity.this,
-							"Query failed: " + ce.getMessage(),
-							Toast.LENGTH_SHORT).show();
-
-					// Add any empty entry as a placeholder
-					addToExpandableListView(className,
-							new ArrayList<CustomClass>());
-				}
-
-				@Override
-				public void onSuccess(Query response) {
-					ArrayList<CustomClass> results = response.getResults();
-					String ccName = response.getCustomClassName();
-
-					// Add these results to the view
-					addToExpandableListView(ccName, results);
-				}
-
-			};
-
 			// Add the query to the networking queue (Volley).
-			ccQuery.executeQuery(handler);
+			ccQuery.executeQuery(new CatalyzeListener<List<CatalyzeEntry>>() {
+                @Override
+                public void onError(CatalyzeException e) {
+                    Toast.makeText(CustomClassActivity.this,
+                            "Query failed: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+
+                    // Add any empty entry as a placeholder
+                    addToExpandableListView(className, new ArrayList<CatalyzeEntry>());
+                }
+
+                @Override
+                public void onSuccess(List<CatalyzeEntry> catalyzeEntries) {
+                    addToExpandableListView(className, catalyzeEntries);
+                }
+            });
 		}
 	}
 
@@ -142,7 +116,10 @@ public class CustomClassActivity extends Activity {
 	 *            The entries for this custom class
 	 */
 	protected synchronized void addToExpandableListView(String name,
-			ArrayList<CustomClass> customClasses) {
+			List<CatalyzeEntry> customClasses) {
+        for (CatalyzeEntry ce : customClasses) {
+            ce.setClassName(name);
+        }
 
 		listDataChild.put(name, customClasses);
 
@@ -151,7 +128,7 @@ public class CustomClassActivity extends Activity {
 		if (fetchCount == 0) {
 			// Ready to display.
 
-			expListView = (ExpandableListView) findViewById(R.id.ccExpandableListView);
+            ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ccExpandableListView);
 
 			// preparing list data
 			// prepareListData();
@@ -176,7 +153,8 @@ public class CustomClassActivity extends Activity {
 							CustomClassEditActivity.class);
 					intent.putExtra("customClass", listAdapter.getCustomClass(
 							groupPosition, childPosition));
-					intent.putExtra("catalyze", catalyze);
+                    intent.putExtra("className", listAdapter.getCustomClass(
+                            groupPosition, childPosition).getClassName());
 					startActivityForResult(intent, 2);
 
 					return false;
@@ -207,43 +185,48 @@ public class CustomClassActivity extends Activity {
 
 			if (resultCode == RESULT_OK) {
 
-				final CustomClass customClass = (CustomClass) data
+				final CatalyzeEntry customClass = (CatalyzeEntry)data
 						.getSerializableExtra("customClass");
+                // we must also fetch the className variable because this is not serialized with
+                // the custom class entry.
+                customClass.setClassName(data.getStringExtra("className"));
 				
-				// Save a new CustomClass
-				customClass
-						.createEntry(new CatalyzeListener<CustomClass>(this) {
+				// Save a new CustomClass Entry
+                customClass.create(new CatalyzeListener<CatalyzeEntry>() {
+                    @Override
+                    public void onError(CatalyzeException e) {
+                        Toast.makeText(
+                                CustomClassActivity.this,
+                                "Custom Class entry creation failed: "
+                                        + e.getMessage(),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
 
-							@Override
-							public void onError(CatalyzeException ce) {
-								Toast.makeText(
-										CustomClassActivity.this,
-										"Custom Class creation failed: "
-												+ ce.getMessage(),
-										Toast.LENGTH_SHORT).show();
-							}
+                    @Override
+                    public void onSuccess(CatalyzeEntry catalyzeEntry) {
+                        Toast.makeText(CustomClassActivity.this,
+                                "Custom class entry created successfully.",
+                                Toast.LENGTH_SHORT).show();
 
-							@Override
-							public void onSuccess(CustomClass response) {
-								Toast.makeText(CustomClassActivity.this,
-										"Custom class created successfully.",
-										Toast.LENGTH_SHORT).show();
-
-								fetchCustomClassInformation();
-							}
-						});
+                        fetchCustomClassInformation();
+                    }
+                });
 
 			}
 			if (resultCode == RESULT_CANCELED) {
 				// Handle cases with no result here
 			}
-		} else if (requestCode == 2) { // Update - not implemented yet
+		} else if (requestCode == 2) { // Update
 
 			if (resultCode == RESULT_OK) {
 
 				// Get the custom class that was edited
-				CustomClass cc = (CustomClass) data
+                CatalyzeEntry cc = (CatalyzeEntry)data
 						.getSerializableExtra("customClass");
+                // we must also fetch the className variable because this is not serialized with
+                // the custom class entry.
+                cc.setClassName(data.getStringExtra("className"));
 
 				// If delete is true the user clicked Delete and this should be
 				// removed
@@ -251,50 +234,48 @@ public class CustomClassActivity extends Activity {
 
 				if (cc != null && !delete) {
 					// Update an existing CustomClass entry
-					cc.updateEntry(new CatalyzeListener<CustomClass>(this) {
+                    cc.update(new CatalyzeListener<CatalyzeEntry>() {
+                        @Override
+                        public void onError(CatalyzeException e) {
+                            Toast.makeText(
+                                    CustomClassActivity.this,
+                                    "Custom Class update failed: "
+                                            + e.getMessage(),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
 
-						@Override
-						public void onError(CatalyzeException ce) {
-							Toast.makeText(
-									CustomClassActivity.this,
-									"Custom Class update failed: "
-											+ ce.getMessage(),
-									Toast.LENGTH_SHORT).show();
-						}
+                        @Override
+                        public void onSuccess(CatalyzeEntry catalyzeEntry) {
+                            Toast.makeText(CustomClassActivity.this,
+                                    "Custom class updated successfully.",
+                                    Toast.LENGTH_SHORT).show();
 
-						@Override
-						public void onSuccess(CustomClass response) {
-							Toast.makeText(CustomClassActivity.this,
-									"Custom class updated successfully.",
-									Toast.LENGTH_SHORT).show();
-
-							fetchCustomClassInformation();
-
-						}
-					});
+                            fetchCustomClassInformation();
+                        }
+                    });
 
 				} else if (cc != null && delete) {
 					// Delete a CustomClass
-					cc.deleteEntry(new CatalyzeListener<CustomClass>(this) {
+                    cc.delete(new CatalyzeListener<CatalyzeEntry>() {
+                        @Override
+                        public void onError(CatalyzeException e) {
+                            Toast.makeText(
+                                    CustomClassActivity.this,
+                                    "Custom Class delete failed: "
+                                            + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
-						@Override
-						public void onError(CatalyzeException ce) {
-							Toast.makeText(
-									CustomClassActivity.this,
-									"Custom Class delete failed: "
-											+ ce.getMessage(),
-									Toast.LENGTH_SHORT).show();
-						}
+                        @Override
+                        public void onSuccess(CatalyzeEntry catalyzeEntry) {
+                            Toast.makeText(CustomClassActivity.this,
+                                    "Custom class deleted successfully.",
+                                    Toast.LENGTH_SHORT).show();
 
-						@Override
-						public void onSuccess(CustomClass response) {
-							Toast.makeText(CustomClassActivity.this,
-									"Custom class deleted successfully.",
-									Toast.LENGTH_SHORT).show();
-
-							fetchCustomClassInformation();
-						}
-					});   
+                            fetchCustomClassInformation();
+                        }
+                    });
 
 				}
 			}

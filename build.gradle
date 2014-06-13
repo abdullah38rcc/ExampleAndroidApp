@@ -7,24 +7,32 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.11.+'
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
+
     compile files('./src/main/libs/catalyze-sdk.jar')
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+    gradleVersion = '1.11'
 }
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.0.1"
-
+    compileSdkVersion 19
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 18
+        targetSdkVersion 19
+    }
+    productFlavors {
+    }
+    buildTypes {
     }
 }
