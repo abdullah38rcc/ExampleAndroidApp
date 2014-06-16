@@ -3,7 +3,6 @@ package io.catalyze.android.example;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,26 +11,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
-import io.catalyze.sdk.android.Catalyze;
 import io.catalyze.sdk.android.CatalyzeException;
 import io.catalyze.sdk.android.CatalyzeListener;
-import io.catalyze.sdk.android.CatalyzeUser;
 import io.catalyze.sdk.android.FileManager;
-import io.catalyze.sdk.android.api.CatalyzeAPIAdapter;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedFile;
 
 /**
  * Simple screen allowing for uploading and downloading of a file.

@@ -1,5 +1,6 @@
 package io.catalyze.android.example;
 
+import io.catalyze.sdk.android.Catalyze;
 import io.catalyze.sdk.android.CatalyzeException;
 import io.catalyze.sdk.android.CatalyzeListener;
 import io.catalyze.sdk.android.CatalyzeEntry;
@@ -85,6 +86,8 @@ public class CustomClassActivity extends Activity {
 			// No criteria are specified so it will return any entry
 			Query ccQuery = new Query(className);
 			ccQuery.setPageSize(5); // Max of 5 entries returned
+            ccQuery.setField("parentId");
+            ccQuery.setSearchBy(Catalyze.getInstance(this).getAuthenticatedUser().getUsersId());
 
 			// Add the query to the networking queue (Volley).
 			ccQuery.executeQuery(new CatalyzeListener<List<CatalyzeEntry>>() {

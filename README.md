@@ -3,17 +3,18 @@ Catalyze Example Application
 
 This repository contains a simple Android application (compatible with versions 2.3.3 and up) that showcases the core functionality of the [http://www.catalyze.io](Catalyze) platform. 
 
-New to Catalyze? Sign up for an account at [http://developer.catalyze.io/](http://developer.catalyze.io/).
+New to Catalyze? Sign up for an account at [https://dashboard.catalyze.io/](https://dashboard.catalyze.io/).
 
 Working functionality: 
 * User log in, sign up and log off 
 * Updating of user information
-* Viewing and adding custom classes. 
-* Simple UMLS lookup (an autocomplete example is in the works)
+* Viewing and adding custom class entries.
+* Simple UMLS lookup
+* Autocomplete UMLS example
+* File upload, download, and deletion
+* File download
 
 Not working yet:
-* File upload, download, delete (the SDK does not support these features yet but the API fully supports these features if needed)
-* UMLS autocomplete example (SDK support works but the UI is not finished)
 * Custom class references (not fully tested at the time of this initial release) 
 
 Email us at <mailto:support@catalyze.io> if you are in need of these features. We will do our best to meet your needs. 
@@ -28,7 +29,7 @@ First make sure ANDROID_HOME points to your Android SDK:
 
     export ANDROID_HOME=/path/to/sdk
 
-Also make sure that your Android SDK has API level 18 (Android 4.3 - Jelly Bean) installed, along with Android SDK Build-tools version 18.0.1 (under Tools in the SDK manager). The example app and SDK support API level 10 (Android 2.3.3) and above but the configurations deault to API 18. 
+Also make sure that your Android SDK has API level 19 (Android 4.4 - Kit Kat) installed, along with Android SDK Build-tools version 19.1.0 (under Tools in the SDK manager). The example app and SDK support API level 10 (Android 2.3.3) and above but the configurations deault to API 19. 
 
 Next, pull down the repository:
 
