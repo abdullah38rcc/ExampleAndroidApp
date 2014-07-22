@@ -30,8 +30,10 @@ public class LoginActivity extends Activity {
 
 		final EditText userEditText = (EditText) findViewById(R.id.userNameTextField);
 		final EditText passwordEditText = (EditText) findViewById(R.id.passwordTextField);
+        final EditText inviteEditText = (EditText) findViewById(R.id.inviteTextField);
 		final Button loginButton = (Button) findViewById(R.id.login);
 		final Button signUpButton = (Button) findViewById(R.id.mainUmlsButton);
+        final Button invitedButton = (Button) findViewById(R.id.invitedButton);
 
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -75,12 +77,13 @@ public class LoginActivity extends Activity {
 			public void onClick(View v) {
 				final String userName = userEditText.getText().toString();
 				final String password = passwordEditText.getText().toString();
+                final String inviteCode = inviteEditText.getText().toString();
 
 				String firstName = "Bob";
 				String lastName = "Jones";
 
 				// Sign up a new user and log in in one shot.
-                catalyze.signUp(userName, password, firstName, lastName, userName, new CatalyzeListener<CatalyzeUser>() {
+                catalyze.signUp(userName, password, firstName, lastName, userName, inviteCode, new CatalyzeListener<CatalyzeUser>() {
                     @Override
                     public void onError(CatalyzeException response) {
                         Toast.makeText(LoginActivity.this,
@@ -119,6 +122,13 @@ public class LoginActivity extends Activity {
 			}
 
 		});
+
+        invitedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inviteEditText.setVisibility(View.VISIBLE);
+            }
+        });
 
 	}
 

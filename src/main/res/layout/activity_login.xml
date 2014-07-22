@@ -47,16 +47,29 @@
         android:hint="Enter password"
         android:text="" >
     </EditText>
-    
-   
+
+    <EditText
+        android:id="@+id/inviteTextField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordTextField"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Enter invite code"
+        android:text=""
+        android:visibility="gone">
+    </EditText>
 
     <LinearLayout
+        android:id="@+id/layout_login_buttons"
         android:orientation="horizontal" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/userNameTextField"
         android:layout_alignRight="@+id/userNameTextField"
-        android:layout_below="@+id/passwordTextField"
+        android:layout_below="@+id/inviteTextField"
         android:layout_marginTop="33dp" >
 
          <Button
@@ -72,6 +85,21 @@
             android:text="Sign Up" />
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/userNameTextField"
+        android:layout_alignRight="@+id/userNameTextField"
+        android:layout_below="@+id/layout_login_buttons"
+        android:layout_marginTop="33dp" >
+
+        <Button
+            android:id="@+id/invitedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I have an invite code" />
+    </LinearLayout>
    
 
 </RelativeLayout>
