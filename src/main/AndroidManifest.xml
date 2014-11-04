@@ -39,11 +39,6 @@
         </activity>
 
         <activity
-            android:name="io.catalyze.android.example.UmlsActivity"
-            android:label="Catalyze UMLS Service" >
-        </activity>
-        
-        <activity
             android:name="io.catalyze.android.example.CustomClassActivity"
             android:label="Catalyze Custom Classes" >
         </activity>

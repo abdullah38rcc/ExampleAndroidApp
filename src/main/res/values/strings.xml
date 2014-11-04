@@ -4,12 +4,4 @@
     <string name="app_name">Catalyze Example</string>
     <string name="action_settings">Settings</string>
 
-    <string-array name="umls_code_sets">
-        <item>SnomedCT</item>
-        <item>LOINC</item>
-        <item>ICD10</item>
-        <item>ICD9</item>
-        <item>RxNorm</item>
-    </string-array>
-
 </resources>

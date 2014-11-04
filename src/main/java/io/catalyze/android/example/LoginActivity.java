@@ -32,7 +32,7 @@ public class LoginActivity extends Activity {
 		final EditText passwordEditText = (EditText) findViewById(R.id.passwordTextField);
         final EditText inviteEditText = (EditText) findViewById(R.id.inviteTextField);
 		final Button loginButton = (Button) findViewById(R.id.login);
-		final Button signUpButton = (Button) findViewById(R.id.mainUmlsButton);
+		final Button signUpButton = (Button) findViewById(R.id.signUpButton);
         final Button invitedButton = (Button) findViewById(R.id.invitedButton);
 
 		loginButton.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +142,7 @@ public class LoginActivity extends Activity {
 		EditText userEditText = (EditText) findViewById(R.id.userNameTextField);
 		EditText passwordEditText = (EditText) findViewById(R.id.passwordTextField);
 		Button loginButton = (Button) findViewById(R.id.login);
-		Button signUpButton = (Button) findViewById(R.id.mainUmlsButton);
+		Button signUpButton = (Button) findViewById(R.id.signUpButton);
 
 		userEditText.setEnabled(enabled);
 		passwordEditText.setEnabled(enabled);

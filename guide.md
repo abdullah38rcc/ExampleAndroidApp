@@ -19,7 +19,7 @@ After this is complete, you must set these values in the apps manifest file:
 
 Now you are ready to use the SDK. You will next need to acquire an authenticated Catalyze instance by logging in a user or creating a new user. The next section covers these steps.  
 
-All networking calls made using the Catalyze Android SDK are made asynchronously (except UMLS requests which have the option of being run synchronously or asynchronously) and sent to the Catalyze API. To simplify the process of making Catalyze API calls we have provided a callback interface that allows you to easily define what you want to do with the results.
+All networking calls made using the Catalyze Android SDK are made asynchronously and sent to the Catalyze API. To simplify the process of making Catalyze API calls we have provided a callback interface that allows you to easily define what you want to do with the results.
 
 To make Catalyze API calls you will need to provide a CatalyzeListener of the appropriate type to the SDK method making the API call. CatalyzeListener is an abstract class with the methods onSuccess() and onError(), that you must define for handling asynchronous responses from API calls. The type that is returned when onSuccess is called is determined by the individual method call, while onError will always receive a CatalyzeException, which is an exception wrapper class that can contain a wide variety of possible errors.
 
@@ -207,45 +207,6 @@ To use Query you must initialize the object with the name of the custom class th
 	});
 
 See the ExampleAndroidApp's CustomClassActivity.java source for an example of how to run concurrent queries and process the results. 
-
-UMLS
-----
-
-UMLS is slightly different than the rest of the SDK in that the calls can be run synchronously or asynchronously. In development, we found it easier to use the synchronous methods for the autocomplete portion while asynchronous for all other uses. Each method will have two declarations: one with a callback as a last parameter and void return type (asynchronous) while the other will have no callback in its parameters but will have an appropriate return type (synchronous). Rememer to run synchronous method calls on a background or worker thread.
-
-There are two major use cases for UMLS data. The first being a simple lookup or search and the second being an autocomplete example. A lookup is easy to do. You can do a variety of requests such as code lookup, get codeset list, get valueset list, search by code or concept, search by keyword, search by prefix, and value lookup. Heres a value lookup example9
-
-	Umls.valueLookup("city", "1581834", new CatalyzeListener<UmlsResult>() {
-	    @Override
-	    public void onError(CatalyzeException e) {
-	        Toast.makeText(MainActivity.this,
-	                "Umls value lookup failed: " + e.getMessage(),
-	                Toast.LENGTH_SHORT).show();
-	    }
-	
-	    @Override
-	    public void onSuccess(UmlsResult umlsResult) {
-	        // do something with the result
-	    }
-	});
-
-And an example of search by keyword
-
-	Umls.searchByKeyword("rxnorm", "Acetaminophen", new CatalyzeListener<List<UmlsResult>>() {
-	    @Override
-	    public void onError(CatalyzeException e) {
-	        Toast.makeText(MainActivity.this,
-	                "Umls search by keyword failed: " + e.getMessage(),
-	                Toast.LENGTH_SHORT).show();
-	    }
-	
-	    @Override
-	    public void onSuccess(List<UmlsResult> umlsResults) {
-	        // do something with the results
-	    }
-	});
-	
-The second use case, the autocomplete text field, is best seen in the ExampleAndroidApp. This can be found in the UmlsActivity.java source code.
 
 File Management
 ---------

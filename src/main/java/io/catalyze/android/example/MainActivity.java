@@ -3,8 +3,6 @@ package io.catalyze.android.example;
 import io.catalyze.sdk.android.Catalyze;
 import io.catalyze.sdk.android.CatalyzeException;
 import io.catalyze.sdk.android.CatalyzeListener;
-import io.catalyze.sdk.android.Umls;
-import io.catalyze.sdk.android.UmlsResult;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.util.List;
 
 /**
  * Simple screen with button to trigger core functionality.
@@ -36,8 +32,6 @@ public class MainActivity extends Activity {
 
 		final Button logoutButton = (Button) findViewById(R.id.mainLogoutButton);
 		final Button getUserButton = (Button) findViewById(R.id.mainGetUserButton);
-		final Button umlsButton = (Button) findViewById(R.id.mainUmlsButton);
-		final Button umlsTestButton = (Button) findViewById(R.id.mainUmlsTestButton);
 		final Button customClassButton = (Button) findViewById(R.id.mainCustomClassesButton);
 		final Button fileButton = (Button) findViewById(R.id.mainFileButton);
 
@@ -79,44 +73,6 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		umlsTestButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                // lookup a predefined value just to see what kind of resuls we get
-                Umls.valueLookup("city", "1581834", new CatalyzeListener<UmlsResult>() {
-                    @Override
-                    public void onError(CatalyzeException e) {
-                        Toast.makeText(MainActivity.this,
-                                "Umls value lookup failed: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onSuccess(UmlsResult umlsResult) {
-                        System.out.println("code: " + umlsResult.getCode());
-                        System.out.println("descr: " + umlsResult.getDesc());
-                    }
-                });
-                // do a search and see that we get a list of results back
-                Umls.searchByKeyword("rxnorm", "Acetaminophen", new CatalyzeListener<List<UmlsResult>>() {
-                    @Override
-                    public void onError(CatalyzeException e) {
-                        Toast.makeText(MainActivity.this,
-                                "Umls search by keyword failed: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onSuccess(List<UmlsResult> umlsResults) {
-                        for (UmlsResult umlsResult : umlsResults) {
-                            System.out.println("code: " + umlsResult.getCode());
-                            System.out.println("descr: " + umlsResult.getDesc());
-                        }
-                    }
-                });
-			}
-		});
-
 		customClassButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -136,14 +92,6 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this,
                         FileManagementActivity.class);
                 startActivity(intent);
-			}
-		});
-
-		umlsButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this, UmlsActivity.class);
-				startActivity(intent);
 			}
 		});
 	}

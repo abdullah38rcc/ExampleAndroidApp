@@ -9,8 +9,6 @@ Working functionality:
 * User log in, sign up and log off 
 * Updating of user information
 * Viewing and adding custom class entries.
-* Simple UMLS lookup
-* Autocomplete UMLS example
 * File upload, download, and deletion
 * File download
 

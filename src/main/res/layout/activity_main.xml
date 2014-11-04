@@ -25,20 +25,6 @@
             android:text="Custom Classes" />
 
         <Button
-            android:id="@+id/mainUmlsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:text="UMLS Lookup" />
-
-        <Button
-            android:id="@+id/mainUmlsTestButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:text="UMLS Quick Test" />
-
-        <Button
             android:id="@+id/mainFileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
